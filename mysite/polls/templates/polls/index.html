@@ -1,0 +1,15 @@
+{% if latest_question_list %}
+    <ul>
+        {% for question in latest_question_list %}
+            <li>
+                {% comment %}this is the 'namespaced' way {% endcomment %}
+                <li><a href= "{% url 'polls:detail' question.id %}">{{question.question_text}}</a></li>
+                {% comment %}provides an easier way to update urls {% endcomment %}
+                {% comment %} <a href = "{% url 'detail' question.id %}/"> {{ question.question_text}}</a> {% endcomment %}
+                {% comment %} <a href="/polls/{{question_id}}/">{{question.question_text}}</a> {% endcomment %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p> No polls are available.</p>
+{% endif %}
