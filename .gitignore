@@ -1,1 +1,3 @@
 /mysite.settings
+/mysite.__pycache__
+/mysite.db.sqlite3

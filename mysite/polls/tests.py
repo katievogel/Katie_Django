@@ -94,15 +94,16 @@ class QuestionDetailViewTests(TestCase):
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
 
+class ChoiceModelTests(TestCase):
 
-# def any_question(question_text):
-#         return Question.objects.create(question_text=question_text)
-
-# class ChoiceModelTests(TestCase):
-
-#     def test_question_has_choices(self):
-#         '''The detail view of a question has choices available'''
-#         sample_question = any_question(question_text = 'Question has choices.')
+    def test_question_has_choices(self):
+        '''The detail view of a question has choices available'''
+        sample_question = create_question(question_text = 'Question has choices.', days = 0)
+        sample_choice = sample_question.choice_set.create(choice_text = 'Some choice text.', votes = 0)
+        url = reverse('polls:detail', args=(sample_question.id,))
+        response = self.client.get(url)
+        self.assertContains(response, sample_choice)
+        self.assertTrue(sample_question.choice_set.count() > 0)
     
 #     def test_question_without_choices_is_unpublished(self):
 #         '''A question without any choices available will not be published '''
