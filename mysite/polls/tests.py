@@ -42,6 +42,19 @@ class QuestionIndexViewTests(TestCase):
         self.assertContains(response, 'No polls are available.')
         self.assertQuerysetEqual(response.context['latest_question_list'], [])
 
+    def test_past_question(self):
+        '''Questions with a pub_date in the past are displayed on the index page'''
+        question = create_question(question_text="Past question.", days=-30)
+        response = self.client.get(reverse('polls:index'))
+        self.assertQuerysetEqual(response.context['latest_question_list'], [question],)
+
+    def test_future_question(self):
+        '''Questions with pub_date in the future aren't displayed on the index page.'''
+        create_question(question_text = "Future question.", days=30)
+        response = self.client.get(reverse('polls:index'))
+        self.assertContains(response, 'No polls are available.')
+        self.assertQuerysetEqual(response.context['latest_question_list'], [])
+
     def test_future_question_and_past_question(self):
         """
         Even if both past and future questions exist, only past questions
@@ -57,7 +70,7 @@ class QuestionIndexViewTests(TestCase):
         """
         question1 = create_question(question_text = "Past question 1.", days=-30)
         question2 = create_question(question_text = "Past question 2.", days=-5)
-        response = self.client.get(reverse('poll:index'))
+        response = self.client.get(reverse('polls:index'))
         self.assertQuerysetEqual(response.context['latest_question_list'], [question2, question1])
 
 class QuestionDetailViewTests(TestCase):
@@ -77,6 +90,27 @@ class QuestionDetailViewTests(TestCase):
         displays the question's text.
         """
         past_question = create_question(question_text='Past question.', days=-5)
-        url = reverse('polls:detail', args=(past_question.id))
+        url = reverse('polls:detail', args=(past_question.id,)) #the comma is needed b/c *args are always tuples. tuples can't have one item
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+
+# def any_question(question_text):
+#         return Question.objects.create(question_text=question_text)
+
+# class ChoiceModelTests(TestCase):
+
+#     def test_question_has_choices(self):
+#         '''The detail view of a question has choices available'''
+#         sample_question = any_question(question_text = 'Question has choices.')
+    
+#     def test_question_without_choices_is_unpublished(self):
+#         '''A question without any choices available will not be published '''
+#         pass
+
+
+    
+
+# todo: Write a test that checks that questions have choices available and that it is not published if it does not
+
+#todo: Write test that checks that admin can unpublish questions, but standard users cannot
