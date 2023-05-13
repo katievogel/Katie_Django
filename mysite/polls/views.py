@@ -15,6 +15,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """returns the last 5 q's"""
+        # only return last 5 questions with choices
         return Question.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 class DetailView(generic.DetailView):

@@ -105,9 +105,12 @@ class ChoiceModelTests(TestCase):
         self.assertContains(response, sample_choice)
         self.assertTrue(sample_question.choice_set.count() > 0)
     
-#     def test_question_without_choices_is_unpublished(self):
-#         '''A question without any choices available will not be published '''
-#         pass
+    def test_question_without_choices_is_unpublished(self):
+        '''A question without any choices available will not be published '''
+        sample_question = create_question(question_text = "Question without choices is unpublished", days = None)
+        #no choices created
+        self.assertTrue(sample_question.pub_date == None)
+
 
 
     
